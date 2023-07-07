@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Base64 Image Preview</title>
+    <script>
+        function previewImage() {
+            var base64Image = document.getElementById("base64Input").value;
+            var imgElement = document.getElementById("previewImg");
+            imgElement.src = base64Image;
+        }
+    </script>
+</head>
+<body>
+    <h1>Base64 Image Preview</h1>
+    <textarea id="base64Input" rows="4" cols="50" placeholder="Paste base64 image code here"></textarea>
+    <br>
+    <button onclick="previewImage()">Preview Image</button>
+    <br>
+    <img id="previewImg" src="" alt="Preview Image">
+</body>
+</html>

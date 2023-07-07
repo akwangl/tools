@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Camera Capture</title>
+    <script>
+        function startCamera() {
+            var constraints = {
+                video: { width: 146, height: 192 },
+                audio: false
+            };
+            navigator.mediaDevices.getUserMedia(constraints)
+                .then(function(stream) {
+                    var videoElement = document.getElementById('video');
+                    videoElement.srcObject = stream;
+                })
+                .catch(function(error) {
+                    console.error('Error accessing camera:', error);
+                });
+        }
+         function takePhoto() {
+            var base64Output = document.getElementById('base64Output');
+            var videoElement = document.getElementById('video');
+            var canvasElement = document.getElementById('canvas');
+            var context = canvasElement.getContext('2d');
+            context.drawImage(videoElement, 0, 0, canvasElement.width, canvasElement.height);
+             // Convert the captured image to base64
+            var imageData = canvasElement.toDataURL();
+            base64Output.value = imageData;
+            // console.log('Captured image data:', imageData);
+        }
+    </script>
+</head>
+<body onload="startCamera()">
+    <h1>Camera Capture</h1>
+    <video id="video" autoplay></video>
+    <br>
+    <button onclick="takePhoto()">Take Photo</button>
+    <br>
+    <canvas id="canvas" width="146" height="192"></canvas>
+    <textarea id="base64Output" rows="10" cols="50"></textarea>
+</body>
+</html>
