@@ -1,0 +1,35 @@
+# Base image with Java 8
+FROM openjdk:8-jdk-alpine3.9
+
+ARG JAR_FILE
+ARG timestamp
+
+RUN apk add bash
+
+# 更换源
+RUN mv /etc/apk/repositories /etc/apk/repositories.bak
+RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.9/main" >> /etc/apk/repositories
+RUN echo "https://mirrors.ustc.edu.cn/alpine/v3.9/community" >> /etc/apk/repositories
+RUN apk update
+RUN apk add busybox-extras vim tzdata
+
+# 修改时间为东八区
+RUN ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
+WORKDIR /app
+RUN mkdir /app/config
+RUN mkdir /app/logs
+
+COPY target/${JAR_FILE} /app/app.jar
+
+ENV IMAGE_TAG=${timestamp}
+ # Tag the image with the specified timestamp
+LABEL buildtime=${timestamp}
+ # Expose the application port (depends on your project setup)
+EXPOSE 8088
+
+# JVM参数 可根据需要设置
+ENV JAVA_OPTS=" -Xmx1g -Xms1g -Dfile.encoding=utf-8 -Duser.timezone=GMT+08"
+
+# 启动命令 运行jar包
+ENTRYPOINT java ${JAVA_OPTS} -jar /app/app.jar --spring.config.location=/app/config/application.yml
